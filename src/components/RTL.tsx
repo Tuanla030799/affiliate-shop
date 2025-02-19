@@ -1,0 +1,34 @@
+import { ReactNode, useEffect } from "react";
+import { prefixer } from "stylis";
+import createCache from "@emotion/cache";
+import rtlPlugin from "stylis-plugin-rtl";
+import { CacheProvider } from "@emotion/react";
+import useSettings from "~/hooks/useSettings";
+
+type RTLProps = {
+  children: ReactNode;
+};
+
+// ========================================================
+
+// ========================================================
+const cacheRTL = createCache({
+  key: "rtl",
+  // prepend: true,
+  stylisPlugins: [rtlPlugin, prefixer],
+});
+
+const RTL = ({ children }: RTLProps) => {
+  const { settings } = useSettings();
+  useEffect(() => {
+    document.dir = settings.direction;
+  }, [settings.direction]);
+
+  if (settings.direction === "rtl") {
+    return <CacheProvider value={cacheRTL}>{children}</CacheProvider>;
+  }
+
+  return <>{children}</>;
+};
+
+export default RTL;
